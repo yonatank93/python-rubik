@@ -6,6 +6,7 @@ from . import F2LSolver
 from . import OLLSolver
 from . import PLLSolver
 
+
 class CFOPSolver(Solver):
     def solution(self):
         cube = copy.deepcopy(self.cube)
@@ -14,6 +15,6 @@ class CFOPSolver(Solver):
         solution += OLLSolver.OLLSolver(cube).solution()
         solution += PLLSolver.PLLSolver(cube).solution()
         # Align top layer
-        while cube.cubies['F'].facings['F'] != cube.cubies['FU'].facings['F']:
-            cube.move(Move('U'))
+        while cube.cubies["F"].facings["F"] != cube.cubies["FU"].facings["F"]:
+            cube.move(Move("U"))
         return [Move(m) for m in solution]

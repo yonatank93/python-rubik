@@ -1,11 +1,12 @@
-from past.builtins import basestring
 import re
 
 
 class Move(object):
     def __init__(self, move):
         if not re.match("[fblrudxyzmse]'?2?", move, re.I):
-            raise ValueError("Invalid move format, must be [face]' or [face]2, got %s" % move)
+            raise ValueError(
+                "Invalid move format, must be [face]' or [face]2, got %s" % move
+            )
 
         self.raw = move.upper()
 
@@ -19,14 +20,14 @@ class Move(object):
 
     @property
     def double(self):
-        return '2' in self.raw
+        return "2" in self.raw
 
     @double.setter
     def double(self, new_double):
         if new_double:
-            self.raw = self.raw.replace('2', '').replace("'", '') + '2'
+            self.raw = self.raw.replace("2", "").replace("'", "") + "2"
         else:
-            self.raw = self.raw.replace('2', '').replace("'", '')
+            self.raw = self.raw.replace("2", "").replace("'", "")
 
     @property
     def counterclockwise(self):
@@ -35,9 +36,9 @@ class Move(object):
     @counterclockwise.setter
     def counterclockwise(self, value):
         if value:
-            self.raw = self.raw.replace("'", '').replace("2", '') + "'"
+            self.raw = self.raw.replace("'", "").replace("2", "") + "'"
         else:
-            self.raw = self.raw.replace("'", '').replace("2", '')
+            self.raw = self.raw.replace("'", "").replace("2", "")
 
     @property
     def clockwise(self):
@@ -51,7 +52,7 @@ class Move(object):
         return Move(self.face + ("'" if self.clockwise else "2" if self.double else ""))
 
     def __eq__(self, move):
-        if isinstance(move, (str, basestring)):
+        if isinstance(move, str):
             return self.raw == move.upper()
         elif isinstance(move, Move):
             return self.raw == move.raw
@@ -68,7 +69,7 @@ class Move(object):
         return not self == move
 
     def __add__(self, move):
-        if isinstance(move, (str, basestring)):
+        if isinstance(move, str):
             return self + Move(move)
         elif move is None:
             return self
@@ -82,8 +83,8 @@ class Move(object):
                 return None
 
             offset = (
-                (self.clockwise + (self.double * 2) + (self.counterclockwise * 3)) +
-                (move.clockwise + (move.double * 2) + (move.counterclockwise * 3))
+                (self.clockwise + (self.double * 2) + (self.counterclockwise * 3))
+                + (move.clockwise + (move.double * 2) + (move.counterclockwise * 3))
             ) % 4
 
             if offset == 0:
@@ -91,10 +92,14 @@ class Move(object):
 
             return Move(self.face + [None, "", "2", "'"][offset])
         else:
-            raise ValueError("Unable to add %s and %s" %(self.raw, str(move)))
+            raise ValueError("Unable to add %s and %s" % (self.raw, str(move)))
 
     def __mul__(self, times):
-        offset = ((self.clockwise + (self.double * 2) + (self.counterclockwise * 3)) * times % 4)
+        offset = (
+            (self.clockwise + (self.double * 2) + (self.counterclockwise * 3))
+            * times
+            % 4
+        )
 
         if offset == 0:
             return None

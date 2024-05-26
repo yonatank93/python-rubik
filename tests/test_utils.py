@@ -10,7 +10,10 @@ try:
 except ImportError:
     from io import StringIO
 
-class MockSolver(object): pass
+
+class MockSolver(object):
+    pass
+
 
 class TestUtils(unittest.TestCase):
     solve_methods = [
@@ -41,21 +44,29 @@ class TestUtils(unittest.TestCase):
                 c = Cube()
                 ref_solution = method(c).solution()
                 s1 = utils.solve(c, method)
-                self.assertEqual(ref_solution, s1, msg = "Failed with Cubie.Cube and method %s" %
-                    method.__class__.__name__
+                self.assertEqual(
+                    ref_solution,
+                    s1,
+                    msg="Failed with Cubie.Cube and method %s"
+                    % method.__class__.__name__,
                 )
                 # Test with NaiveCube
                 s2 = utils.solve(c.to_naive_cube(), method)
-                self.assertEqual(ref_solution, s2, msg = "Failed with Cubie.Cube and method %s" %
-                    method.__class__.__name__
+                self.assertEqual(
+                    ref_solution,
+                    s2,
+                    msg="Failed with Cubie.Cube and method %s"
+                    % method.__class__.__name__,
                 )
 
                 # Test with string representation
                 s3 = utils.solve(c.to_naive_cube().get_cube(), method)
-                self.assertEqual(ref_solution, s3, msg = "Failed with Cubie.Cube and method %s" %
-                    method.__class__.__name__
+                self.assertEqual(
+                    ref_solution,
+                    s3,
+                    msg="Failed with Cubie.Cube and method %s"
+                    % method.__class__.__name__,
                 )
-
 
     def test_pprint(self):
         c = Cube()
@@ -75,13 +86,13 @@ class TestUtils(unittest.TestCase):
             utils.main([])
 
         with self.assertRaises(SystemExit):
-            utils.main(['-c'])
+            utils.main(["-c"])
 
         with self.assertRaises(SystemExit):
-            utils.main(['-h'])
+            utils.main(["-h"])
 
         with self.assertRaises(SystemExit):
-            utils.main(['-i'])
+            utils.main(["-i"])
 
         # Discard stdout
         sys.stdout = StringIO()
@@ -89,7 +100,7 @@ class TestUtils(unittest.TestCase):
             for i in range(10):
                 c = Cube()
                 ref_solution = method(c).solution()
-                utils.main(['--cube', c.to_naive_cube().get_cube()])
-                utils.main(['-i',     c.to_naive_cube().get_cube()])
+                utils.main(["--cube", c.to_naive_cube().get_cube()])
+                utils.main(["-i", c.to_naive_cube().get_cube()])
         # Restore stdout and stderr
         sys.stdout, sys.stderr = stdout, stderr

@@ -7,6 +7,7 @@ from . import SecondLayerSolver
 from . import YellowCrossSolver
 from . import YellowFaceSolver
 
+
 class BeginnerSolver(Solver):
     def solution(self):
         cube = copy.deepcopy(self.cube)

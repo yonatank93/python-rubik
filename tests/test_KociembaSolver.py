@@ -13,7 +13,7 @@ class TestKociembaSolver(unittest.TestCase):
         return solver.solution()
 
     def test_solved_solution(self):
-        '''Try to solve an already solved cube'''
+        """Try to solve an already solved cube"""
         c = Cube()
         solution = self._test_solution(c)
         self._check_solution(c, solution)
@@ -30,12 +30,14 @@ class TestKociembaSolver(unittest.TestCase):
         for s in solution:
             c.move(s)
         # Align faces
-        while cr.cubies['F'].facings['F'] != c.cubies['F'].facings['F']:
-            c.move(Move('Y'))
+        while cr.cubies["F"].facings["F"] != c.cubies["F"].facings["F"]:
+            c.move(Move("Y"))
 
         for cubie in cr.cubies:
             for facing in cr.cubies[cubie].facings:
-                self.assertEqual(cr.cubies[cubie].facings[facing], c.cubies[cubie].facings[facing])
+                self.assertEqual(
+                    cr.cubies[cubie].facings[facing], c.cubies[cubie].facings[facing]
+                )
 
     def test_timeout(self):
         c = Cube()
@@ -44,4 +46,4 @@ class TestKociembaSolver(unittest.TestCase):
         c.from_naive_cube(nc)
         with self.assertRaises(Kociemba.Search.SolverTimeoutError):
             solver = Kociemba.KociembaSolver(c)
-            solver.solution(timeOut = 1)
+            solver.solution(timeOut=1)

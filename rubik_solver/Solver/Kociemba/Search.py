@@ -1,4 +1,4 @@
-__author__ = 'Victor'
+__author__ = "Victor"
 
 import time
 
@@ -18,6 +18,7 @@ class NoSolution(Exception):
 
 class SolverTimeoutError(Exception):
     pass
+
 
 class Search(object):
     ax = [0] * 31  # The axis of the move
@@ -40,10 +41,10 @@ class Search(object):
     # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     # generate the solution string from the array data
     @staticmethod
-    def solutionToString(length, depthPhase1=- 1):
+    def solutionToString(length, depthPhase1=-1):
         s = []
         for i in range(length):
-            step = ''
+            step = ""
             if Search.ax[i] == 0:
                 step = "U"
             elif Search.ax[i] == 1:
@@ -68,7 +69,7 @@ class Search(object):
 
     @staticmethod
     def solution(facelets, maxDepth, timeOut, useSeparator=False):
-        '''
+        """
         * Computes the solver string for a given cube.
         *
         * @param facelets
@@ -95,15 +96,14 @@ class Search(object):
         *         Error 6: Parity error: Two corners or two edges have to be exchanged<br>
         *         Error 7: No solution exists for the given maxDepth<br>
         *         Error 8: Timeout, no solution within given time
-        '''
+        """
         # +++++++++++++++++++++check for wrong input ++++++++++++++++++++++++++
         count = [0] * 6
         try:
             for i in range(54):
                 count[getattr(Color, facelets[i])] += 1
         except Exception as e:
-            raise DupedFacelet(
-                "There is not exactly one facelet of each colour")
+            raise DupedFacelet("There is not exactly one facelet of each colour")
 
         for i in range(6):
             if count[i] != 9:
@@ -155,12 +155,14 @@ class Search(object):
                             if Search.ax[n] > 5:
                                 if time.time() - tStart > timeOut:
                                     raise SolverTimeoutError(
-                                        "Timeout, no solution within given time")
+                                        "Timeout, no solution within given time"
+                                    )
 
                                 if n == 0:
                                     if depthPhase1 >= maxDepth:
                                         raise NoSolution(
-                                            "No solution exists for the given maxDepth")
+                                            "No solution exists for the given maxDepth"
+                                        )
                                     else:
                                         depthPhase1 += 1
                                         Search.ax[n] = 0
@@ -175,7 +177,13 @@ class Search(object):
                                 Search.po[n] = 1
                                 busy = False
 
-                            if not(n != 0 and (Search.ax[n - 1] == Search.ax[n] or Search.ax[n - 1] - 3 == Search.ax[n])):
+                            if not (
+                                n != 0
+                                and (
+                                    Search.ax[n - 1] == Search.ax[n]
+                                    or Search.ax[n - 1] - 3 == Search.ax[n]
+                                )
+                            ):
                                 break
                     else:
                         busy = False
@@ -187,12 +195,20 @@ class Search(object):
             mv = 3 * Search.ax[n] + Search.po[n] - 1
             Search.flip[n + 1] = CoordCube.CoordCube.flipMove[Search.flip[n]][mv]
             Search.twist[n + 1] = CoordCube.CoordCube.twistMove[Search.twist[n]][mv]
-            Search.slice[n + 1] = CoordCube.CoordCube.FRtoBR_Move[Search.slice[n] * 24][mv] // 24
+            Search.slice[n + 1] = (
+                CoordCube.CoordCube.FRtoBR_Move[Search.slice[n] * 24][mv] // 24
+            )
             Search.minDistPhase1[n + 1] = max(
                 CoordCube.CoordCube.getPruning(
-                    CoordCube.CoordCube.Slice_Flip_Prun, CoordCube.CoordCube.N_SLICE1 * Search.flip[n + 1] + Search.slice[n + 1]),
+                    CoordCube.CoordCube.Slice_Flip_Prun,
+                    CoordCube.CoordCube.N_SLICE1 * Search.flip[n + 1]
+                    + Search.slice[n + 1],
+                ),
                 CoordCube.CoordCube.getPruning(
-                    CoordCube.CoordCube.Slice_Twist_Prun, CoordCube.CoordCube.N_SLICE1 * Search.twist[n + 1] + Search.slice[n + 1])
+                    CoordCube.CoordCube.Slice_Twist_Prun,
+                    CoordCube.CoordCube.N_SLICE1 * Search.twist[n + 1]
+                    + Search.slice[n + 1],
+                ),
             )
             # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -202,9 +218,13 @@ class Search(object):
                 if n == (depthPhase1 - 1):
                     s = Search.totalDepth(depthPhase1, maxDepth)
                     if s >= 0:
-                        if s == depthPhase1 or (Search.ax[depthPhase1 - 1] != Search.ax[depthPhase1] and
-                          Search.ax[depthPhase1 - 1] != Search.ax[depthPhase1] + 3):
-                            return Search.solutionToString(s, depthPhase1 if useSeparator else -1)
+                        if s == depthPhase1 or (
+                            Search.ax[depthPhase1 - 1] != Search.ax[depthPhase1]
+                            and Search.ax[depthPhase1 - 1] != Search.ax[depthPhase1] + 3
+                        ):
+                            return Search.solutionToString(
+                                s, depthPhase1 if useSeparator else -1
+                            )
 
     @staticmethod
     def totalDepthPhase2(depthPhase1, depthPhase2, maxDepthPhase2, n):
@@ -231,7 +251,13 @@ class Search(object):
                 else:
                     Search.po[n] = 2
                 busy = False
-            if not (n != depthPhase1 and (Search.ax[n - 1] == Search.ax[n] or (Search.ax[n - 1]) - 3 == Search.ax[n])):
+            if not (
+                n != depthPhase1
+                and (
+                    Search.ax[n - 1] == Search.ax[n]
+                    or (Search.ax[n - 1]) - 3 == Search.ax[n]
+                )
+            ):
                 break
         return True, busy, n, depthPhase2
 
@@ -245,31 +271,40 @@ class Search(object):
         maxDepthPhase2 = min(10, maxDepth - depthPhase1)
         for i in range(depthPhase1):
             mv = 3 * Search.ax[i] + Search.po[i] - 1
-            Search.URFtoDLF[i + 1] = CoordCube.CoordCube.URFtoDLF_Move[Search.URFtoDLF[i]][mv]
+            Search.URFtoDLF[i + 1] = CoordCube.CoordCube.URFtoDLF_Move[
+                Search.URFtoDLF[i]
+            ][mv]
             Search.FRtoBR[i + 1] = CoordCube.CoordCube.FRtoBR_Move[Search.FRtoBR[i]][mv]
             Search.parity[i + 1] = CoordCube.CoordCube.parityMove[Search.parity[i]][mv]
 
         d1 = CoordCube.CoordCube.getPruning(
             CoordCube.CoordCube.Slice_URFtoDLF_Parity_Prun,
-            (CoordCube.CoordCube.N_SLICE2 *
-             Search.URFtoDLF[depthPhase1] + Search.FRtoBR[depthPhase1]) * 2 + Search.parity[depthPhase1]
+            (
+                CoordCube.CoordCube.N_SLICE2 * Search.URFtoDLF[depthPhase1]
+                + Search.FRtoBR[depthPhase1]
+            )
+            * 2
+            + Search.parity[depthPhase1],
         )
         if d1 > maxDepthPhase2:
             return -1
         for i in range(depthPhase1):
             mv = 3 * Search.ax[i] + Search.po[i] - 1
-            Search.URtoUL[i +
-                          1] = CoordCube.CoordCube.URtoUL_Move[Search.URtoUL[i]][mv]
-            Search.UBtoDF[i +
-                          1] = CoordCube.CoordCube.UBtoDF_Move[Search.UBtoDF[i]][mv]
+            Search.URtoUL[i + 1] = CoordCube.CoordCube.URtoUL_Move[Search.URtoUL[i]][mv]
+            Search.UBtoDF[i + 1] = CoordCube.CoordCube.UBtoDF_Move[Search.UBtoDF[i]][mv]
 
-        Search.URtoDF[depthPhase1] = CoordCube.CoordCube.MergeURtoULandUBtoDF[Search.URtoUL[depthPhase1]
-                                                                              ][Search.UBtoDF[depthPhase1]]
+        Search.URtoDF[depthPhase1] = CoordCube.CoordCube.MergeURtoULandUBtoDF[
+            Search.URtoUL[depthPhase1]
+        ][Search.UBtoDF[depthPhase1]]
 
         d2 = CoordCube.CoordCube.getPruning(
             CoordCube.CoordCube.Slice_URtoDF_Parity_Prun,
-            (CoordCube.CoordCube.N_SLICE2 *
-             Search.URtoDF[depthPhase1] + Search.FRtoBR[depthPhase1]) * 2 + Search.parity[depthPhase1]
+            (
+                CoordCube.CoordCube.N_SLICE2 * Search.URtoDF[depthPhase1]
+                + Search.FRtoBR[depthPhase1]
+            )
+            * 2
+            + Search.parity[depthPhase1],
         )
         if d2 > maxDepthPhase2:
             return -1
@@ -289,7 +324,9 @@ class Search(object):
         # +++++++++++++++++++ end initialization ++++++++++++++++++++++++++++++
         while True:
             while True:
-                if (depthPhase1 + depthPhase2 - n) > (Search.minDistPhase2[n + 1]) and not busy:
+                if (depthPhase1 + depthPhase2 - n) > (
+                    Search.minDistPhase2[n + 1]
+                ) and not busy:
                     if Search.ax[n] == 0 or Search.ax[n] == 3:  # Initialize next move
                         n += 1
                         Search.ax[n] = 1
@@ -310,7 +347,9 @@ class Search(object):
                             execWhile = True
 
                     if execWhile:
-                        keep_working, busy, n, depthPhase2 = Search.totalDepthPhase2(depthPhase1, depthPhase2, maxDepthPhase2, n)
+                        keep_working, busy, n, depthPhase2 = Search.totalDepthPhase2(
+                            depthPhase1, depthPhase2, maxDepthPhase2, n
+                        )
                         if not keep_working:
                             return -1
                     else:
@@ -320,24 +359,32 @@ class Search(object):
             # +++++++++++++ compute new coordinates and new minDist ++++++++++
             mv = 3 * Search.ax[n] + Search.po[n] - 1
 
-            Search.URFtoDLF[n +
-                            1] = CoordCube.CoordCube.URFtoDLF_Move[Search.URFtoDLF[n]][mv]
-            Search.FRtoBR[n +
-                          1] = CoordCube.CoordCube.FRtoBR_Move[Search.FRtoBR[n]][mv]
-            Search.parity[n +
-                          1] = CoordCube.CoordCube.parityMove[Search.parity[n]][mv]
-            Search.URtoDF[n +
-                          1] = CoordCube.CoordCube.URtoDF_Move[Search.URtoDF[n]][mv]
+            Search.URFtoDLF[n + 1] = CoordCube.CoordCube.URFtoDLF_Move[
+                Search.URFtoDLF[n]
+            ][mv]
+            Search.FRtoBR[n + 1] = CoordCube.CoordCube.FRtoBR_Move[Search.FRtoBR[n]][mv]
+            Search.parity[n + 1] = CoordCube.CoordCube.parityMove[Search.parity[n]][mv]
+            Search.URtoDF[n + 1] = CoordCube.CoordCube.URtoDF_Move[Search.URtoDF[n]][mv]
 
             Search.minDistPhase2[n + 1] = max(
                 CoordCube.CoordCube.getPruning(
                     CoordCube.CoordCube.Slice_URtoDF_Parity_Prun,
-                    (CoordCube.CoordCube.N_SLICE2 * Search.URtoDF[n + 1] + Search.FRtoBR[n + 1]) * 2 + Search.parity[n + 1]),
+                    (
+                        CoordCube.CoordCube.N_SLICE2 * Search.URtoDF[n + 1]
+                        + Search.FRtoBR[n + 1]
+                    )
+                    * 2
+                    + Search.parity[n + 1],
+                ),
                 CoordCube.CoordCube.getPruning(
                     CoordCube.CoordCube.Slice_URFtoDLF_Parity_Prun,
-                    (CoordCube.CoordCube.N_SLICE2 *
-                     Search.URFtoDLF[n + 1] + Search.FRtoBR[n + 1]) * 2 + Search.parity[n + 1]
-                )
+                    (
+                        CoordCube.CoordCube.N_SLICE2 * Search.URFtoDLF[n + 1]
+                        + Search.FRtoBR[n + 1]
+                    )
+                    * 2
+                    + Search.parity[n + 1],
+                ),
             )
             # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
             if Search.minDistPhase2[n + 1] == 0:

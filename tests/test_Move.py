@@ -2,48 +2,50 @@ from rubik_solver.Move import Move
 import string
 import unittest
 
+
 class TestMove(unittest.TestCase):
-    allowed_moves = 'fblrudxyzmse'
+    allowed_moves = "fblrudxyzmse"
+
     def test_init(self):
         for c in string.ascii_lowercase:
             if c in self.allowed_moves:
                 self.assertEqual(Move(c).raw, c.upper())
                 self.assertEqual(Move(c.upper()).raw, c.upper())
 
-                self.assertEqual(Move(c+"2").raw, c.upper()+"2")
-                self.assertEqual(Move(c.upper()+"2").raw, c.upper()+"2")
+                self.assertEqual(Move(c + "2").raw, c.upper() + "2")
+                self.assertEqual(Move(c.upper() + "2").raw, c.upper() + "2")
 
-                self.assertEqual(Move(c+"'").raw, c.upper()+"'")
-                self.assertEqual(Move(c.upper()+"'").raw, c.upper()+"'")
+                self.assertEqual(Move(c + "'").raw, c.upper() + "'")
+                self.assertEqual(Move(c.upper() + "'").raw, c.upper() + "'")
 
                 self.assertEqual(Move(c).face, c.upper())
                 self.assertEqual(Move(c.upper()).face, c.upper())
 
-                self.assertEqual(Move(c+"2").face, c.upper())
-                self.assertEqual(Move(c.upper()+"2").face, c.upper())
+                self.assertEqual(Move(c + "2").face, c.upper())
+                self.assertEqual(Move(c.upper() + "2").face, c.upper())
 
-                self.assertEqual(Move(c+"'").face, c.upper())
-                self.assertEqual(Move(c.upper()+"'").face, c.upper())
+                self.assertEqual(Move(c + "'").face, c.upper())
+                self.assertEqual(Move(c.upper() + "'").face, c.upper())
 
                 self.assertTrue(Move(c).clockwise)
                 self.assertFalse(Move(c).counterclockwise)
                 self.assertFalse(Move(c).double)
 
-                self.assertFalse(Move(c+"'").clockwise)
-                self.assertTrue(Move(c+"'").counterclockwise)
-                self.assertFalse(Move(c+"'").double)
+                self.assertFalse(Move(c + "'").clockwise)
+                self.assertTrue(Move(c + "'").counterclockwise)
+                self.assertFalse(Move(c + "'").double)
 
-                self.assertFalse(Move(c+"2").clockwise)
-                self.assertFalse(Move(c+"2").counterclockwise)
-                self.assertTrue(Move(c+"2").double)
-                
+                self.assertFalse(Move(c + "2").clockwise)
+                self.assertFalse(Move(c + "2").counterclockwise)
+                self.assertTrue(Move(c + "2").double)
+
             else:
                 with self.assertRaises(ValueError):
                     Move(c)
                 with self.assertRaises(ValueError):
-                    Move(c+"'")
+                    Move(c + "'")
                 with self.assertRaises(ValueError):
-                    Move(c+"2")
+                    Move(c + "2")
 
     def test_logic(self):
         m = Move(self.allowed_moves[0])
@@ -56,7 +58,7 @@ class TestMove(unittest.TestCase):
         self.assertFalse(m.clockwise)
         self.assertFalse(m.counterclockwise)
         self.assertTrue(m.double)
-        
+
         m.double = False
         self.assertTrue(m.clockwise)
         self.assertFalse(m.counterclockwise)
@@ -66,7 +68,7 @@ class TestMove(unittest.TestCase):
         self.assertFalse(m.clockwise)
         self.assertTrue(m.counterclockwise)
         self.assertFalse(m.double)
-        
+
         m.counterclockwise = False
         self.assertTrue(m.clockwise)
         self.assertFalse(m.counterclockwise)
@@ -79,7 +81,7 @@ class TestMove(unittest.TestCase):
         self.assertFalse(m1.clockwise)
         self.assertTrue(m1.counterclockwise)
         self.assertFalse(m1.double)
-        
+
         m.double = True
         m1 = m.reverse()
         self.assertFalse(m1.clockwise)
@@ -93,10 +95,10 @@ class TestMove(unittest.TestCase):
         self.assertFalse(m1.double)
 
     def test_equals(self):
-        self.assertEqual(Move("F"), 'f')
-        self.assertEqual(Move("f"), 'f')
-        self.assertEqual(Move("F"), 'F')
-        self.assertEqual(Move("f"), 'F')
+        self.assertEqual(Move("F"), "f")
+        self.assertEqual(Move("f"), "f")
+        self.assertEqual(Move("F"), "F")
+        self.assertEqual(Move("f"), "F")
 
         self.assertEqual(Move("F"), Move("f"))
 
@@ -137,7 +139,7 @@ class TestMove(unittest.TestCase):
         self.assertEqual(Move("f") + Move("f") + Move("f"), "F'")
         self.assertEqual(Move("f2") + Move("f"), "F'")
         self.assertIsNone(Move("f") + Move("f") + Move("f") + Move("f"))
-        
+
         self.assertIsNone(Move("f") * 4)
         self.assertIsNone(Move("f") * 8)
 
