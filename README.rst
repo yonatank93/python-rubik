@@ -17,7 +17,7 @@ Python Rubik Solver
 .. image:: https://readthedocs.org/projects/rubik-solver/badge/?version=latest
    :target: https://rubik-solver.readthedocs.io/en/latest/
 
-Rubik Cube solving library and command line utility
+Rubik Cube solving library and command line utility (A fork from https://github.com/Wiston999/python-rubik)
 
 How to install
 --------------
