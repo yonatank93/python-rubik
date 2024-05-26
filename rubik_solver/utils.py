@@ -6,6 +6,7 @@ from .Solver import CFOP
 from .Solver import Kociemba
 from .NaiveCube import NaiveCube
 from .Cubie import Cube
+from .CubeReader import CubeDict
 from .Printer import TtyPrinter
 
 __author__ = "Victor Cabezas"
@@ -50,6 +51,8 @@ def solve(cube, method=Beginner.BeginnerSolver, *args, **kwargs):
             "Method %s is not a valid Solver subclass" % method.__class__.__name__
         )
 
+    if isinstance(cube, CubeDict):
+        cube = str(cube)
     cube = _check_valid_cube(cube)
 
     solver = method(cube)
