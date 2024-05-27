@@ -42,7 +42,7 @@ class TtyPrinter(Printer):
 
     def print_upper(self):
         for i in range(self.cube.size * 2 + 1):
-            print(" " * (self.cube.size * 6), end=" ")
+            print(" " * ((self.cube.size * 6) + 1), end=" ")
             if (i % 2) == 0:
                 for j in range(self.cube.size * 2):
                     if (j % 2) == 0:
@@ -82,7 +82,7 @@ class TtyPrinter(Printer):
 
     def print_down(self):
         for i in range(self.cube.size * 2 + 1):
-            print(" " * (self.cube.size * 6), end=" ")
+            print(" " * ((self.cube.size * 6) + 1), end=" ")
             if (i % 2) == 0:
                 for j in range(self.cube.size * 2):
                     if (j % 2) == 0:
