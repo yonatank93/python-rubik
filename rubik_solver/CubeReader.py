@@ -1,3 +1,6 @@
+faces = ["top", "left", "front", "right", "back", "bottom"]
+
+
 class CubeDict:
     def __init__(self):
         self._front = None
@@ -6,6 +9,15 @@ class CubeDict:
         self._bottom = None
         self._left = None
         self._right = None
+
+        self.input_prompt()
+
+    def input_prompt(self):
+        """Promp to input cube faces and set the cube."""
+        cube = {}
+        for face in faces:
+            cube.update({face: input(f"Input the {face} face: ")})
+        self.reader(cube)
 
     @property
     def front(self):
@@ -56,6 +68,7 @@ class CubeDict:
         self._right = face
 
     def reader(self, cube):
+        """Read the cube from a dictionary."""
         self.front = cube["front"]
         self.back = cube["back"]
         self.top = cube["top"]
