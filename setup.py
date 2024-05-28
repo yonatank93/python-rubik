@@ -46,6 +46,6 @@ setup(
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=install_reqs,
-    entry_points={"console_scripts": ["rubik_solver=rubik_solver.utils:main"]},
+    entry_points={"console_scripts": ["rubik_solver=rubik_solver.main:main"]},
     include_package_data=True,
 )

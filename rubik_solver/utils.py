@@ -1,12 +1,10 @@
-import argparse
-import time
 from .Solver import Solver
 from .Solver import Beginner
 from .Solver import CFOP
 from .Solver import Kociemba
 from .NaiveCube import NaiveCube
 from .Cubie import Cube
-from .CubeReader import CubeDict
+from .Reader import UserInput
 from .Printer import TtyPrinter
 
 __author__ = "Victor Cabezas"
@@ -51,7 +49,7 @@ def solve(cube, method=Beginner.BeginnerSolver, *args, **kwargs):
             "Method %s is not a valid Solver subclass" % method.__class__.__name__
         )
 
-    if isinstance(cube, CubeDict):
+    if isinstance(cube, UserInput):
         cube = str(cube)
     cube = _check_valid_cube(cube)
 
@@ -64,35 +62,3 @@ def pprint(cube, color=True):
     cube = _check_valid_cube(cube)
     printer = TtyPrinter(cube, color)
     printer.pprint()
-
-
-def main(argv=None):
-    arg_parser = argparse.ArgumentParser(description="rubik_solver command line tool")
-    arg_parser.add_argument(
-        "-i", "--cube", dest="cube", required=True, help="Cube definition string"
-    )
-    arg_parser.add_argument(
-        "-c",
-        "--color",
-        dest="color",
-        default=True,
-        action="store_false",
-        help="Disable use of colors with TtyPrinter",
-    )
-    arg_parser.add_argument(
-        "-s",
-        "--solver",
-        dest="solver",
-        default="Beginner",
-        choices=METHODS.keys(),
-        help="Solver method to use",
-    )
-    args = arg_parser.parse_args(argv)
-
-    cube = args.cube.lower()
-    print("Read cube", cube)
-    pprint(cube, args.color)
-
-    start = time.time()
-    print("Solution", ", ".join(map(str, solve(cube, METHODS[args.solver]))))
-    print("Solved in", time.time() - start, "seconds")
