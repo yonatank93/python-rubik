@@ -1,7 +1,8 @@
 faces = ["top", "left", "front", "right", "back", "bottom"]
+colors = ["y", "b", "r", "g", "o", "w"]
 
 
-class CubeDict:
+class UserInput:
     def __init__(self):
         self._front = None
         self._back = None
@@ -16,8 +17,34 @@ class CubeDict:
         """Promp to input cube faces and set the cube."""
         cube = {}
         for face in faces:
-            cube.update({face: input(f"Input the {face} face: ")})
+            while True:
+                face_input = input(f"Input the {face} face: ")
+                try:  # Checks
+                    # Check shape
+                    self.shape_check(face_input)
+                    # Check color input
+                    self.color_check(face_input)
+                    # Pass all checks
+                    break
+                except AssertionError:
+                    continue
+            cube.update({face: face_input})
         self.reader(cube)
+
+    @staticmethod
+    def shape_check(face):
+        # Check the shape
+        if len(face) != 9:
+            print("Fail shape check: Need to input 9 tiles for 3 by 3 cube.")
+            raise AssertionError
+
+    @staticmethod
+    def color_check(face):
+        # Check the input colors
+        pass_color_check = all([char in colors for char in face])
+        if not pass_color_check:
+            print(f"Fail color check: Make sure the colors are in {colors}")
+            raise AssertionError
 
     @property
     def front(self):
