@@ -1,3 +1,5 @@
+from .utils import infer_bottom_center, infer_bottom_edges, infer_bottom_corners
+
 faces = ["top", "left", "front", "right", "back", "bottom"]
 colors = ["y", "b", "r", "g", "o", "w"]
 
@@ -16,7 +18,7 @@ class UserInput:
     def input_prompt(self):
         """Promp to input cube faces and set the cube."""
         cube = {}
-        for face in faces:
+        for face in faces[:-1]:  # Exclude the bottom
             while True:
                 face_input = input(f"Input the {face} face: ")
                 try:  # Checks
@@ -29,6 +31,46 @@ class UserInput:
                 except AssertionError:
                     continue
             cube.update({face: face_input})
+
+        # Special case for the bottom face: user doesn't need to input it and we can
+        # just infer it from the other faces
+        face = faces[-1]
+        while True:
+            face_input = input(f"Input the {face} face: ")
+            if face_input == "":  # No input from user, try to infer the face.
+                # Get the faces without the bottom face
+                faces_no_bottom = ""
+                for ff in faces[:-1]:
+                    faces_no_bottom += cube[ff]
+                # Infer bottom face
+                bottom_center = infer_bottom_center(faces_no_bottom)
+                bottom_corners = infer_bottom_corners(faces_no_bottom)
+                bottom_edges = infer_bottom_edges(faces_no_bottom)
+                face_input = (
+                    bottom_corners[0]
+                    + bottom_edges[0]
+                    + bottom_corners[1]
+                    + bottom_edges[1]
+                    + bottom_center
+                    + bottom_edges[2]
+                    + bottom_corners[2]
+                    + bottom_edges[3]
+                    + bottom_corners[3]
+                )
+                break
+            else:
+                try:  # Checks
+                    # Check shape
+                    self.shape_check(face_input)
+                    # Check color input
+                    self.color_check(face_input)
+                    # Pass all checks
+                    break
+                except AssertionError:
+                    continue
+        cube.update({face: face_input})
+
+        # Read the dictionary
         self.reader(cube)
 
     @staticmethod
