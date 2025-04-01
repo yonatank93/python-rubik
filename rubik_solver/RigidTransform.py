@@ -26,22 +26,24 @@ class RigidRotation:
         """
         raise NotImplementedError
 
-    def relabel_faces_one_positive_rotation(self, faces):
+    def relabel_faces_one_positive_rotation(self, faces_str):
         """Relabel the faces after a positive rotation."""
-        return [faces[ii] for ii in self.index_relabel_faces_one_positive_rotation]
-
-    def relabel_faces_two_positive_rotation(self, faces):
-        """Relabel the faces after two positive rotations, i.e., rotating 180 degree."""
-        return self.relabel_faces_one_positive_rotation(
-            self.relabel_faces_one_positive_rotation(faces)
+        return "".join(
+            [faces_str[ii] for ii in self.index_relabel_faces_one_positive_rotation]
         )
 
-    def relabel_faces_one_negative_rotation(self, faces):
+    def relabel_faces_two_positive_rotation(self, faces_str):
+        """Relabel the faces after two positive rotations, i.e., rotating 180 degree."""
+        return self.relabel_faces_one_positive_rotation(
+            self.relabel_faces_one_positive_rotation(faces_str)
+        )
+
+    def relabel_faces_one_negative_rotation(self, faces_str):
         """Relabel the faces after a negative rotation, which is equivalent to three
         positive rotations.
         """
         return self.relabel_faces_two_positive_rotation(
-            self.relabel_faces_one_positive_rotation(faces)
+            self.relabel_faces_one_positive_rotation(faces_str)
         )
 
     @property
@@ -102,9 +104,9 @@ class Pitch(RigidRotation):
             8, 7, 6,
             5, 4, 3,
             2, 1, 0,
-            42, 43, 44,
-            39, 40, 41,
-            36, 37, 38,
+            44, 43, 42,
+            41, 40, 39,
+            38, 37, 36,
         ]
         # fmt: on
         return idx
@@ -161,10 +163,10 @@ class Yaw(RigidRotation):
             12, 13, 14,
             15, 16, 17,
             18, 19, 20,
-            20, 21, 22,
+            21, 22, 23,
             24, 25, 26,
-            27, 28, 30,
-            31, 32, 33,
+            27, 28, 29,
+            30, 31, 32,
             33, 34, 35,
             51, 48, 45,
             52, 49, 46,

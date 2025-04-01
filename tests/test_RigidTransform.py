@@ -5,7 +5,21 @@ from rubik_solver.RigidTransform import Pitch, Yaw, Roll
 
 
 # Create a cube
+# Start with an unshuffled cube
 cube_string = "yyyyyyyyybbbbbbbbbrrrrrrrrrgggggggggooooooooowwwwwwwww"
+naive_cube = NaiveCube()
+naive_cube.set_cube(cube_string)
+cube = Cube()
+cube.from_naive_cube(naive_cube)
+# Shuffle
+cube.shuffle()
+naive_cube = cube.to_naive_cube()
+cube_string = []
+[
+    cube_string.extend(naive_cube.faces[face].squares)
+    for face in ["U", "L", "F", "R", "B", "D"]
+]
+cube_string = "".join(cube_string)
 
 
 def display_cube_from_string(cube_string):
@@ -22,30 +36,33 @@ print("Original orientation")
 display_cube_from_string(cube_string)
 
 
-# Get the cube string from naive_cube
-naive_cube = NaiveCube()
-naive_cube.set_cube(cube_string)
-cube_list = []
-[
-    cube_list.extend(naive_cube.faces[face].squares)
-    for face in ["U", "L", "F", "R", "B", "D"]
-]
-
 # Rotate the cube
 # Pitch
-p = Pitch()
-cube_pitched = "".join(p.relabel_faces_one_positive_rotation(cube_list))
 print("Pitched orientation")
-display_cube_from_string(cube_pitched)
+p = Pitch()
+cube_pitched = p.relabel_faces_one_positive_rotation(cube_string)
+cube_double_pitched = p.relabel_faces_two_positive_rotation(cube_string)
+# Test
+print(p.relabel_faces_one_negative_rotation(cube_pitched) == cube_string)
+print(p.relabel_faces_two_positive_rotation(cube_double_pitched) == cube_string)
+# display_cube_from_string(cube_pitched)
 
 # Pitch
-y = Yaw()
-cube_yawed = "".join(y.relabel_faces_one_positive_rotation(cube_list))
 print("Yawed orientation")
-display_cube_from_string(cube_yawed)
+y = Yaw()
+cube_yawed = y.relabel_faces_one_positive_rotation(cube_string)
+cube_double_yawed = y.relabel_faces_two_positive_rotation(cube_string)
+# Test
+print(y.relabel_faces_one_negative_rotation(cube_yawed) == cube_string)
+print(y.relabel_faces_two_positive_rotation(cube_double_yawed) == cube_string)
+# display_cube_from_string(cube_yawed)
 
-# Pitch
-y = Roll()
-cube_rolled = "".join(y.relabel_faces_one_positive_rotation(cube_list))
+# Roll
 print("Rolled orientation")
-display_cube_from_string(cube_rolled)
+r = Roll()
+cube_rolled = r.relabel_faces_one_positive_rotation(cube_string)
+cube_double_rolled = r.relabel_faces_two_positive_rotation(cube_string)
+# Test
+print(r.relabel_faces_one_negative_rotation(cube_rolled) == cube_string)
+print(r.relabel_faces_two_positive_rotation(cube_double_rolled) == cube_string)
+# display_cube_from_string(cube_rolled)
