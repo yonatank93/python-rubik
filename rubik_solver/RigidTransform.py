@@ -16,12 +16,19 @@ respectively.
 class RigidRotation:
     """Base class for rigid body rotations."""
 
-    def __init__(self, cube):
-        self.cube = cube
+    def __init__(self):
+        pass
+
+    @property
+    def index_relabel_faces_one_positive_rotation(self):
+        """A list of indices that maps the original faces to the rotated faces after one
+        positive rotation.
+        """
+        raise NotImplementedError
 
     def relabel_faces_one_positive_rotation(self, faces):
         """Relabel the faces after a positive rotation."""
-        raise NotImplementedError
+        return [faces[ii] for ii in self.index_relabel_faces_one_positive_rotation]
 
     def relabel_faces_two_positive_rotation(self, faces):
         """Relabel the faces after two positive rotations, i.e., rotating 180 degree."""
@@ -70,22 +77,24 @@ class Pitch(RigidRotation):
     where the bottom face becomes the top face.
     """
 
-    def __init__(self, cube):
-        super().__init__(cube)
+    def __init__(self):
+        super().__init__()
 
-    def relabel_faces_one_positive_rotation(self, faces):
-        """Relabel the faces after a positive pitch rotation."""
-        transformed_cube = self.cube.copy()
+    @property
+    def index_relabel_faces_one_positive_rotation(self):
+        """A list of indices that maps the original faces to the rotated faces after one
+        positive pitch rotation.
+        """
         # fmt: off
         idx = [
-            18, 19, 29,
+            18, 19, 20,
             21, 22, 23,
             24, 25, 26,
             11, 14, 17,
             10, 13, 16,
             9, 12, 15,
             45, 46, 47,
-            48, 49, 59,
+            48, 49, 50,
             51, 52, 53,
             33, 30, 27,
             34, 31, 28,
@@ -98,7 +107,7 @@ class Pitch(RigidRotation):
             36, 37, 38,
         ]
         # fmt: on
-        return faces
+        return idx
 
     @property
     def inverse_transform_move_mapping(self):
@@ -133,11 +142,13 @@ class Yaw(RigidRotation):
     """
 
     def __init__(self):
-        super().__init__(cube)
+        super().__init__()
 
-    def relabel_faces_one_positive_rotation(self, faces):
-        """Relabel the faces after a positive yaw rotation."""
-        transformed_cube = self.cube.copy()
+    @property
+    def index_relabel_faces_one_positive_rotation(self):
+        """A list of indices that maps the original faces to the rotated faces after one
+        positive yaw rotation.
+        """
         # fmt: off
         idx = [
             2, 5, 8,
@@ -149,7 +160,7 @@ class Yaw(RigidRotation):
             9, 10, 11,
             12, 13, 14,
             15, 16, 17,
-            18, 19, 29,
+            18, 19, 20,
             20, 21, 22,
             24, 25, 26,
             27, 28, 30,
@@ -160,7 +171,7 @@ class Yaw(RigidRotation):
             53, 50, 47,
         ]
         # fmt: on
-        return faces
+        return idx
 
     @property
     def inverse_transform_move_mapping(self):
@@ -195,11 +206,13 @@ class Roll(RigidRotation):
     """
 
     def __init__(self):
-        super().__init__(cube)
+        super().__init__()
 
-    def relabel_faces_one_positive_rotation(self, faces):
-        """Relabel the faces after a positive yaw rotation."""
-        transformed_cube = self.cube.copy()
+    @property
+    def index_relabel_faces_one_positive_rotation(self):
+        """A list of indices that maps the original faces to the rotated faces after one
+        positive roll rotation.
+        """
         # fmt: off
         idx = [
             29, 32, 35,
@@ -222,7 +235,7 @@ class Roll(RigidRotation):
             9, 12, 15,
         ]
         # fmt: on
-        return faces
+        return idx
 
     @property
     def inverse_transform_move_mapping(self):
