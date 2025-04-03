@@ -71,6 +71,18 @@ class RigidRotation:
             self.inverse_transform_move_one_positive_rotation(move_list)
         )
 
+    def __call__(self, faces_str, n=1):
+        """Relabel the faces after a transformation."""
+        if n == 1:
+            # One 90 degree positive rotation
+            return self.relabel_faces_one_positive_rotation(faces_str)
+        elif n == 2:
+            # One 180 degree positive rotations
+            return self.relabel_faces_two_positive_rotation(faces_str)
+        elif n == -1:
+            # One 90 degree negative rotation
+            return self.relabel_faces_one_negative_rotation(faces_str)
+
 
 class Pitch(RigidRotation):
     """If the x axis is the horizontal axis and the y axis is the vertical axis, then
@@ -229,9 +241,9 @@ class Roll(RigidRotation):
             47, 50, 53,
             46, 49, 52,
             45, 48, 51,
-            38, 41, 44,
-            37, 40, 43,
-            36, 39, 42,
+            42, 39, 36,
+            43, 40, 37,
+            44, 41, 38,
             11, 14, 17,
             10, 13, 16,
             9, 12, 15,
@@ -264,4 +276,4 @@ class Roll(RigidRotation):
         }
 
 
-rotation = {"P": Pitch, "Y": Yaw, "R": Roll}
+rotation = {"P": Pitch(), "Y": Yaw(), "R": Roll()}
