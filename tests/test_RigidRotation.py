@@ -2,7 +2,7 @@ import unittest
 import random
 from rubik_solver.NaiveCube import NaiveCube
 from rubik_solver.Cubie import Cube
-from rubik_solver.RigidTransform import Pitch, Yaw, Roll, Rotation
+from rubik_solver.RigidRotation import Pitch, Yaw, Roll, Rotation
 from rubik_solver.main import solve
 
 

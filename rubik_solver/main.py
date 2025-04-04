@@ -7,7 +7,7 @@ from .Cubie import Cube
 from .Reader import UserInput
 from .Printer import TtyPrinter
 from .Move import Move
-from .RigidTransform import Rotation
+from .RigidRotation import Rotation
 
 
 __author__ = "Victor Cabezas"
