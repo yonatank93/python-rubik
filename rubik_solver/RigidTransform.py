@@ -276,4 +276,4 @@ class Roll(RigidRotation):
         }
 
 
-rotation = {"P": Pitch(), "Y": Yaw(), "R": Roll()}
+Rotation = {"P": Pitch(), "Y": Yaw(), "R": Roll()}
