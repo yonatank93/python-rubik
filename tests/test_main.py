@@ -1,6 +1,6 @@
 import sys
 from rubik_solver.Cubie import Cube
-from rubik_solver import utils
+from rubik_solver.main import solve, pprint, main
 import timeout_decorator
 import unittest
 from rubik_solver.Solver import Beginner, CFOP, Kociemba
@@ -15,7 +15,7 @@ class MockSolver(object):
     pass
 
 
-class TestUtils(unittest.TestCase):
+class TestMain(unittest.TestCase):
     solve_methods = [
         Beginner.BeginnerSolver,
         CFOP.CFOPSolver,
@@ -25,25 +25,25 @@ class TestUtils(unittest.TestCase):
     def test_solve(self):
         c = Cube()
         with self.assertRaises(TypeError):
-            utils.solve(c, None)
+            solve(c, None)
 
         with self.assertRaises(ValueError):
-            utils.solve(None, "INVALID SOLVER")
+            solve(None, "INVALID SOLVER")
 
         with self.assertRaises(ValueError):
-            utils.solve(None, MockSolver)
+            solve(None, MockSolver)
 
         with self.assertRaises(ValueError):
-            utils.solve(None, self.solve_methods[0])
+            solve(None, self.solve_methods[0])
 
         with self.assertRaises(ValueError):
-            utils.solve(1, self.solve_methods[0])
+            solve(1, self.solve_methods[0])
 
         for method in self.solve_methods:
             for i in range(10):
                 c = Cube()
                 ref_solution = method(c).solution()
-                s1 = utils.solve(c, method)
+                s1 = solve(c, method)
                 self.assertEqual(
                     ref_solution,
                     s1,
@@ -51,7 +51,7 @@ class TestUtils(unittest.TestCase):
                     % method.__class__.__name__,
                 )
                 # Test with NaiveCube
-                s2 = utils.solve(c.to_naive_cube(), method)
+                s2 = solve(c.to_naive_cube(), method)
                 self.assertEqual(
                     ref_solution,
                     s2,
@@ -60,7 +60,7 @@ class TestUtils(unittest.TestCase):
                 )
 
                 # Test with string representation
-                s3 = utils.solve(c.to_naive_cube().get_cube(), method)
+                s3 = solve(c.to_naive_cube().get_cube(), method)
                 self.assertEqual(
                     ref_solution,
                     s3,
@@ -71,28 +71,28 @@ class TestUtils(unittest.TestCase):
     def test_pprint(self):
         c = Cube()
         with self.assertRaises(ValueError):
-            utils.pprint(None)
+            pprint(None)
 
         with self.assertRaises(ValueError):
-            utils.pprint(1)
+            pprint(1)
         # Just call it and wait not to fail
-        utils.pprint(Cube())
+        pprint(Cube())
 
     def test_main(self):
         stdout, stderr = sys.stdout, sys.stderr
         sys.stdout, sys.stderr = StringIO(), StringIO()
 
         with self.assertRaises(SystemExit):
-            utils.main([])
+            main([])
 
         with self.assertRaises(SystemExit):
-            utils.main(["-c"])
+            main(["-c"])
 
         with self.assertRaises(SystemExit):
-            utils.main(["-h"])
+            main(["-h"])
 
         with self.assertRaises(SystemExit):
-            utils.main(["-i"])
+            main(["-i"])
 
         # Discard stdout
         sys.stdout = StringIO()
@@ -100,7 +100,7 @@ class TestUtils(unittest.TestCase):
             for i in range(10):
                 c = Cube()
                 ref_solution = method(c).solution()
-                utils.main(["--cube", c.to_naive_cube().get_cube()])
-                utils.main(["-i", c.to_naive_cube().get_cube()])
+                main(["--cube", c.to_naive_cube().get_cube()])
+                main(["-i", c.to_naive_cube().get_cube()])
         # Restore stdout and stderr
         sys.stdout, sys.stderr = stdout, stderr
