@@ -74,8 +74,9 @@ def _align_centers(cube_str):
                 # trying it 4 times, the cube will be back to the original position.
                 for nr in range(4):
                     # Check if more centers are aligned.
-                    if sum(_compare_center_colors(cube_transformed)) > naligns:
-                        naligns += 1  # Increment the number of aligned centers
+                    naligns_current = sum(_compare_center_colors(cube_transformed))
+                    if naligns_current > naligns:
+                        naligns = naligns_current
                         break
                     else:
                         # If nothing is improved, rotate the cube. But, we also need to
@@ -121,7 +122,7 @@ def solve(cube, method=Beginner.BeginnerSolver, *args, **kwargs):
     if isinstance(cube, UserInput):
         cube = str(cube)
 
-    if method == "Kociemba" or isinstance(method, Kociemba.KociembaSolver):
+    if "Kociemba" in method.__name__:
         # Align the centers of the cube
         if isinstance(cube, (Cube, NaiveCube)):
             if isinstance(cube, Cube):
