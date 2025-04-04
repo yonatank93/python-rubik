@@ -1,16 +1,17 @@
 import argparse
 import time
 
-from .Solver import Solver
-from .Solver import Beginner
-from .Solver import CFOP
-from .Solver import Kociemba
+from .Solver import Solver, Beginner, CFOP, Kociemba
 from .NaiveCube import NaiveCube
 from .Cubie import Cube
 from .Reader import UserInput
 from .Printer import TtyPrinter
+from .Move import Move
+from .RigidTransform import Rotation
+
 
 __author__ = "Victor Cabezas"
+__maintainer__ = "Yonatan Kurniawan"
 
 METHODS = {
     "Beginner": Beginner.BeginnerSolver,
@@ -39,6 +40,70 @@ def _check_valid_cube(cube):
     return cube
 
 
+def _retrieve_center_colors(cube_str):
+    """Retrieve the center colors of the cube from the string representation."""
+    index_center = [4, 13, 22, 31, 40, 49]
+    return [cube_str[ii] for ii in index_center]
+
+
+def _compare_center_colors(cube_str):
+    """Compare the center colors of the cube with the target color order."""
+    target_color_center = ["y", "b", "r", "g", "o", "w"]
+    center_colors = _retrieve_center_colors(cube_str)
+    return [a == b for a, b in zip(center_colors, target_color_center)]
+
+
+def _align_centers(cube_str):
+    """Do combinations of rigid rotations so that the centers of the cube are aligned in
+    the following order: {top: yellow, bottom: white, left: blue, right: green,
+    front: red, back: orange}.
+    """
+    cube_transformed = cube_str  # Copy the input cube string
+    rotation_list = []  # This is to record the rotation to align the centers
+    naligns = 0  # Number of aligned centers
+    while True:
+        # Start checking --- Who knows if the cube is already valid. Plus, this is the
+        # only breaking point for the while True loop.
+        if all(_compare_center_colors(cube_transformed)):
+            break
+        else:
+            # Iterate over the rotation
+            for t in ["P", "Y", "R"]:
+                T = Rotation[t]
+                # For each rotation, we will only try it 4 times before moving on. After
+                # trying it 4 times, the cube will be back to the original position.
+                for nr in range(4):
+                    # Check if more centers are aligned.
+                    if sum(_compare_center_colors(cube_transformed)) > naligns:
+                        naligns += 1  # Increment the number of aligned centers
+                        break
+                    else:
+                        # If nothing is improved, rotate the cube. But, we also need to
+                        # append the rotation we do to the rotation list.
+                        rotation_list.append(t)
+                        # Before moving forward, there is a chance that we rotate the
+                        # cube 4 times, which returns the cube to the original position.
+                        # In that case, there is no need to save the 4 rotations.
+                        if nr == 3:
+                            rotation_list = rotation_list[:-4]
+                        # Apply the rotation
+                        cube_transformed = T(cube_transformed)
+    return cube_transformed, rotation_list
+
+
+def _transform_solution(solution, rotation_list):
+    # Convert the solution list into a list of str
+    solution_str = [s.raw for s in solution]
+
+    # Transform solution
+    for t in rotation_list[::-1]:  # Apply the transformations in reverse order
+        T = Rotation[t]
+        solution_str = T.inverse_transform_move_one_positive_rotation(solution_str)
+    # Convert the solution back to Move objects
+    solution = [Move(s) for s in solution_str]
+    return solution
+
+
 def solve(cube, method=Beginner.BeginnerSolver, *args, **kwargs):
     if isinstance(method, str):
         if not method in METHODS:
@@ -54,11 +119,19 @@ def solve(cube, method=Beginner.BeginnerSolver, *args, **kwargs):
 
     if isinstance(cube, UserInput):
         cube = str(cube)
-    cube = _check_valid_cube(cube)
+    # Align the centers of the cube
+    if not isinstance(cube, str):
+        pass
+    aligned_cube, rotation_list = _align_centers(cube)
+    aligned_cube = _check_valid_cube(aligned_cube)
 
-    solver = method(cube)
+    # Solve --- The solver search the solution with aligned cube
+    solver = method(aligned_cube)
+    aligned_solution = solver.solution(*args, **kwargs)
 
-    return solver.solution(*args, **kwargs)
+    # Transform the solution to get solution for the original cube
+    solution = _transform_solution(aligned_solution, rotation_list)
+    return solution
 
 
 def pprint(cube, color=True):
