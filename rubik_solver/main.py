@@ -117,12 +117,17 @@ def solve(cube, method=Beginner.BeginnerSolver, *args, **kwargs):
             "Method %s is not a valid Solver subclass" % method.__class__.__name__
         )
 
+    cube = _check_valid_cube(cube)
+
     if isinstance(cube, UserInput):
         cube = str(cube)
     # Align the centers of the cube
-    if not isinstance(cube, str):
-        pass
+    if isinstance(cube, (Cube, NaiveCube)):
+        if isinstance(cube, Cube):
+            cube = cube.to_naive_cube()
+        cube = cube.get_cube()
     aligned_cube, rotation_list = _align_centers(cube)
+    # This is redundant, but it unify the format
     aligned_cube = _check_valid_cube(aligned_cube)
 
     # Solve --- The solver search the solution with aligned cube
@@ -142,9 +147,14 @@ def pprint(cube, color=True):
 
 def main(argv=None):
     arg_parser = argparse.ArgumentParser(description="rubik_solver command line tool")
-    # arg_parser.add_argument(
-    #     "-i", "--cube", dest="cube", required=True, help="Cube definition string"
-    # )
+    arg_parser.add_argument("-i", "--cube", dest="cube", help="Cube definition string")
+    arg_parser.add_argument(
+        "-I",
+        "--interactive",
+        dest="per_side_input",
+        action="store_true",
+        help="Interactive input of cube sides",
+    )
     arg_parser.add_argument(
         "-c",
         "--color",
@@ -163,7 +173,13 @@ def main(argv=None):
     )
     args = arg_parser.parse_args(argv)
 
-    cube = str(UserInput())  # args.cube.lower()
+    if args.cube is None:
+        if args.per_side_input:
+            cube = str(UserInput())
+        else:
+            raise SystemExit
+    else:
+        cube = args.cube.lower()
     print("Read cube", cube)
     pprint(cube, args.color)
 
