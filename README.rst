@@ -22,12 +22,17 @@ Rubik Cube solving library and command line utility (A fork from https://github.
 How to install
 --------------
 
-``$ pip install rubik_solver``
+.. code:: bash
+
+   $ git clone https://github.com/yonatank93/python-rubik.git
+   $ cd python-rubik
+   $ git checkout other_input_format
+   $ pip install .
 
 How to use
 ----------
 
-As a command
+As a command (this branch includes an improved command-line interface that is *not* shown in the following demonstration)
 
 .. image:: docs/_static/cmd_tty.gif
 
@@ -37,12 +42,12 @@ As a module
 .. code:: python
  
   >>> cube = 'wowgybwyogygybyoggrowbrgywrborwggybrbwororbwborgowryby'
-  >>> from rubik_solver import utils
-  >>> utils.solve(cube, 'Beginner')
+  >>> from rubik_solver.main import solve
+  >>> solve(cube, 'Beginner')
   [F', R, U', R', U, U, F2, Y, B', U, B, U, F2, Y, R', F', U, F, R, U, U, U, F2, Y, L, F, U', F', L', U, F2, Y, L', U, L, U', R, U, R', Y, U', F', U', F, Y, B, U, B', R, U, R', Y, Y, U', L', U, L, U, F, U', F', Y, Y, U2, Y2, U, R, U', R', U', F', U, F, Y, Y, U, R, U', R', U', F', U, F, Y, F, R, U, R', U', F', U2, F, R, U, R', U', F', F, R, U, R', U', F', U, U, U, U, R, U', L', U, R', U', L, R', D', R, D, R', D', R, D, U, R', D', R, D, R', D', R, D, U, U, R', D', R, D, R', D', R, D, U]
-  >>> utils.solve(cube, 'CFOP')
+  >>> solve(cube, 'CFOP')
   [F', R, U', R', U, U, F2, Y, B', U, B, U, F2, Y, R', F', U, F, R, U, U, U, F2, Y, L, F, U', F', L', U, F2, Y, L', U, L, U', U, F', U, F, U, F', U2, F, Y, U, Y', R', U', R, U2, R', U', R, U, R', U', R, Y, Y, B, U, B', U, F', U2, F, U, F', U2, F, Y, U2, U', R, U, R', U, R, U, R', Y, Y, R', F, R, U, R', F', R, Y, L, U', L', U, Y, Y, Y, Y, U, Y, Y, Y, Y, U, Y, Y, R, U', R, U, R, U, R, U', R', U', R2]
-  >>> utils.solve(cube, 'Kociemba')
+  >>> solve(cube, 'Kociemba')
   [L', F, B2, R', B, R', L, B, D', F', U, B2, U, F2, D', R2, L2, U, F2, D']
 
 Cube Notation
@@ -90,16 +95,25 @@ Colors used in the implementation are:
 NOTE
 ----
 
-``Kociemba`` solver needs the following cubies at place:
+~``Kociemba`` solver needs the following cubies at place:~
 
--   **4** (Upper center): **YELLOW**
--   **13** (Left center): **BLUE**
--   **22** (Front center): **RED**
--   **31** (Right center): **GREEN**
--   **40** (Back center): **ORANGE**
--   **49** (Down center): **WHITE**
+-   ~**4** (Upper center): **YELLOW**~
+-   ~**13** (Left center): **BLUE**~
+-   ~**22** (Front center): **RED**~
+-   ~**31** (Right center): **GREEN**~
+-   ~**40** (Back center): **ORANGE**~
+-   ~**49** (Down center): **WHITE**~
+
+IMPROVEMENTS
+------------
+
+These are several improvements over the original `python-rubik <https://github.com/Wiston999/python-rubik>`_ repository.
+
+-  Added an interactive command-line interface that allows the user to input each cube side one by one.
+-  When using the Kociemba solver, the cube no longer needs to have a specific orientation.
 
 TODO
 ----
 -  Improve documentation
 -  Improve Kociemba Solver tests
+-  Improve the implementation that allows arbitrary cube orientation when using the Kociemba solver, which currently avoids using internal functionality and may not be optimal
