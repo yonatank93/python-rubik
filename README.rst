@@ -92,17 +92,17 @@ Colors used in the implementation are:
 -  [Y]ellow
 -  [G]reen
 
-NOTE
-----
+NOTE (Not applied for this branch)
+----------------------------------
 
-~~``Kociemba`` solver needs the following cubies at place:~~
+``Kociemba`` solver needs the following cubies at place:
 
--   ~~**4** (Upper center): **YELLOW**~~
--   ~~**13** (Left center): **BLUE**~~
--   ~~**22** (Front center): **RED**~~
--   ~~**31** (Right center): **GREEN**~~
--   ~~**40** (Back center): **ORANGE**~~
--   ~~**49** (Down center): **WHITE**~~
+-   **4** (Upper center): **YELLOW**
+-   **13** (Left center): **BLUE**
+-   **22** (Front center): **RED**
+-   **31** (Right center): **GREEN**
+-   **40** (Back center): **ORANGE**
+-   **49** (Down center): **WHITE**
 
 IMPROVEMENTS
 ------------
