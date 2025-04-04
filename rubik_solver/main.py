@@ -119,28 +119,33 @@ def solve(cube, method=Beginner.BeginnerSolver, *args, **kwargs):
         )
 
     cube = _check_valid_cube(cube)
-    if isinstance(cube, UserInput):
-        cube = str(cube)
 
-    if "Kociemba" in method.__name__:
-        # Align the centers of the cube
-        if isinstance(cube, (Cube, NaiveCube)):
-            if isinstance(cube, Cube):
-                cube = cube.to_naive_cube()
-            cube = cube.get_cube()
-        aligned_cube, rotation_list = _align_centers(cube)
-        # This is redundant, but it unify the format
-        aligned_cube = _check_valid_cube(aligned_cube)
-
-        # Solve --- The solver search the solution with aligned cube
-        solver = method(aligned_cube)
-        aligned_solution = solver.solution(*args, **kwargs)
-
-        # Transform the solution to get solution for the original cube
-        solution = _transform_solution(aligned_solution, rotation_list)
+    # Always check if the input cube is solved --- Rare event, but it can happen
+    if cube.to_naive_cube().is_solved():
+        solution = []
     else:
-        solver = method(_check_valid_cube(cube))
-        solution = solver.solution(*args, **kwargs)
+        if isinstance(cube, UserInput):
+            cube = str(cube)
+
+        if "Kociemba" in method.__name__:
+            # Align the centers of the cube
+            if isinstance(cube, (Cube, NaiveCube)):
+                if isinstance(cube, Cube):
+                    cube = cube.to_naive_cube()
+                cube = cube.get_cube()
+            aligned_cube, rotation_list = _align_centers(cube)
+            # This is redundant, but it unify the format
+            aligned_cube = _check_valid_cube(aligned_cube)
+
+            # Solve --- The solver search the solution with aligned cube
+            solver = method(aligned_cube)
+            aligned_solution = solver.solution(*args, **kwargs)
+
+            # Transform the solution to get solution for the original cube
+            solution = _transform_solution(aligned_solution, rotation_list)
+        else:
+            solver = method(_check_valid_cube(cube))
+            solution = solver.solution(*args, **kwargs)
     return solution
 
 
@@ -180,13 +185,24 @@ def main(argv=None):
 
     if args.cube is None:
         if args.per_side_input:
-            cube = str(UserInput())
+            while True:
+                cube = str(UserInput())
+                print("Read cube", cube)
+                pprint(cube, args.color)
+                response = input("Is this cube correct? (y/n): ").strip().lower()
+                if response == "y":
+                    break
+                elif response == "n":
+                    continue
+                else:
+                    print("Invalid input, please enter 'y' or 'n'.")
+                    continue
         else:
             raise SystemExit
     else:
         cube = args.cube.lower()
-    print("Read cube", cube)
-    pprint(cube, args.color)
+        print("Read cube", cube)
+        pprint(cube, args.color)
 
     start = time.time()
     print("Solution", ", ".join(map(str, solve(cube, METHODS[args.solver]))))
