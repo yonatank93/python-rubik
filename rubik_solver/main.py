@@ -118,24 +118,28 @@ def solve(cube, method=Beginner.BeginnerSolver, *args, **kwargs):
         )
 
     cube = _check_valid_cube(cube)
-
     if isinstance(cube, UserInput):
         cube = str(cube)
-    # Align the centers of the cube
-    if isinstance(cube, (Cube, NaiveCube)):
-        if isinstance(cube, Cube):
-            cube = cube.to_naive_cube()
-        cube = cube.get_cube()
-    aligned_cube, rotation_list = _align_centers(cube)
-    # This is redundant, but it unify the format
-    aligned_cube = _check_valid_cube(aligned_cube)
 
-    # Solve --- The solver search the solution with aligned cube
-    solver = method(aligned_cube)
-    aligned_solution = solver.solution(*args, **kwargs)
+    if method == "Kociemba" or isinstance(method, Kociemba.KociembaSolver):
+        # Align the centers of the cube
+        if isinstance(cube, (Cube, NaiveCube)):
+            if isinstance(cube, Cube):
+                cube = cube.to_naive_cube()
+            cube = cube.get_cube()
+        aligned_cube, rotation_list = _align_centers(cube)
+        # This is redundant, but it unify the format
+        aligned_cube = _check_valid_cube(aligned_cube)
 
-    # Transform the solution to get solution for the original cube
-    solution = _transform_solution(aligned_solution, rotation_list)
+        # Solve --- The solver search the solution with aligned cube
+        solver = method(aligned_cube)
+        aligned_solution = solver.solution(*args, **kwargs)
+
+        # Transform the solution to get solution for the original cube
+        solution = _transform_solution(aligned_solution, rotation_list)
+    else:
+        solver = method(_check_valid_cube(cube))
+        solution = solver.solution(*args, **kwargs)
     return solution
 
 
